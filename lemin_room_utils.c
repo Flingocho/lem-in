@@ -55,6 +55,16 @@ t_room	*findRoomName(t_lemin *vars, char *name)
     return (NULL);
 }
 
+t_room	*findRoomById(t_lemin *vars, int id)
+{
+	for (int i = 0; i < vars->room_count; i++)
+    {
+        if (vars->rooms[i]->room_id == id)
+            return (vars->rooms[i]);
+    }
+    return (NULL);
+}
+
 void	roomsClear(t_lemin *vars)
 {
 	for (int i = 0; i < vars->room_count; i++)

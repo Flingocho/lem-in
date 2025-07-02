@@ -134,33 +134,28 @@ int makeRoomsConns(char **input, int i, t_lemin *vars)
 
 	while (input[i])
 	{
-		printf("DEBUG: Procesando línea de conexión %d: '%s'\n", i, input[i]);
+		if (input[i][0] == '#')
+		{
+			i++;
+			continue;
+		}
 		line = ft_split(input[i], '-');
-		printf("DEBUG: Después del split, longitud: %zu\n", ft_dplen(line));
-		if (ft_dplen(line) >= 1)
-			printf("DEBUG: Primer elemento: '%s'\n", line[0]);
-		if (ft_dplen(line) >= 2)
-			printf("DEBUG: Segundo elemento: '%s'\n", line[1]);
 		
 		if (ft_dplen(line) != 2)
 		{
-			printf("DEBUG: Error - número incorrecto de elementos en la línea\n");
-			return (freedoublepointer(line), ft_printf("Error: Connection structure\n"), -1);
+			return (freedoublepointer(line), ft_printf("Error: Connection structure 1: line:%d, dplen:%i\n", i, ft_dplen(line)), -1);
 		}
 		
 		if (!findRoomName(vars, line[0]))
 		{
-			printf("DEBUG: Error - habitación '%s' no encontrada\n", line[0]);
-			return (freedoublepointer(line), ft_printf("Error: Connection structure\n"), -1);
+			return (freedoublepointer(line), ft_printf("Error: Connection structure 2: line:%d\n", i), -1);
 		}
 		
 		if (!findRoomName(vars, line[1]))
 		{
-			printf("DEBUG: Error - habitación '%s' no encontrada\n", line[1]);
-			return (freedoublepointer(line), ft_printf("Error: Connection structure\n"), -1);
+			return (freedoublepointer(line), ft_printf("Error: Connection structure 3: line:%d\n", i), -1);
 		}
 		
-		printf("DEBUG: Conexión válida: '%s' -> '%s'\n", line[0], line[1]);
 		roomAddConn(findRoomName(vars, line[0]), findRoomName(vars, line[1]));
 		freedoublepointer(line);
 		i++;
@@ -206,11 +201,11 @@ int getRoomInfo(t_lemin *vars)
 		{
 			if (!res[j])
 				break;
-			printf("path num: %d	ants assigned: %d	start: %d ", j, res[j]->ants_assigned, res[j]->room_ids[0]);
+			printf("path num: %d	ants assigned: %d	start: %s ", j, res[j]->ants_assigned, findRoomById(vars, res[j]->room_ids[0])->room_name);
 			for (int i = 1; i < res[j]->length; i++)
 			{
 				printf("->");
-				printf(" %d ", res[j]->room_ids[i]);
+				printf(" %s ", findRoomById(vars, res[j]->room_ids[i])->room_name);
 			}
 			printf("\n");
 		}

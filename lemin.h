@@ -59,6 +59,7 @@ t_room	*roomNew(char *name, int isStart, int roomNum);
 void	roomsClear(t_lemin *vars);
 void	roomAddConn(t_room *room, t_room *new_connection);
 t_room	*findRoomName(t_lemin *vars, char *name);
+t_room	*findRoomById(t_lemin *vars, int id);
 t_room	**addRoomToArray(t_room *room, t_lemin *vars);
 int		makeRoomsConns(char **input, int i, t_lemin *vars);
 t_path	**findAllPaths(t_lemin *vars);
