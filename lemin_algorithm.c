@@ -6,7 +6,7 @@
 /*   By: jainavas <jainavas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 22:09:06 by jainavas          #+#    #+#             */
-/*   Updated: 2025/06/29 23:56:55 by jainavas         ###   ########.fr       */
+/*   Updated: 2025/06/30 00:10:55 by jainavas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,10 @@ t_path **findAllPaths(t_lemin *vars)
 		res[i] = path;
 		i++;
 		markUsedPath(path, perm_visited);
+		
+		// Si es un camino directo (solo start y end), no buscar más
+		if (path->length == 2)
+			break;
 	}
 	free(perm_visited);
 	vars->path_count = i;
@@ -132,4 +136,106 @@ void	distributeAnts(t_path **paths, t_lemin *vars)
 		paths[i]->ants_assigned = 0;
 	for (int i = 0; i < vars->ant_count; i++)
 		paths[bestPathIndx(paths, vars->path_count)]->ants_assigned++;
+}
+
+void	simulateAntMovement(t_path **paths, t_lemin *vars)
+{
+	// Array para rastrear la posición de cada hormiga en su camino
+	int *ant_positions = ft_calloc(vars->ant_count, sizeof(int));
+	int *ant_path = ft_calloc(vars->ant_count, sizeof(int));
+	int *ant_finished = ft_calloc(vars->ant_count, sizeof(int));
+	int ant_id = 1;
+	int finished_ants = 0;
+	int step = 0;
+	
+	// Asignar hormigas a sus caminos
+	for (int path_i = 0; path_i < vars->path_count; path_i++)
+	{
+		for (int ant_in_path = 0; ant_in_path < paths[path_i]->ants_assigned; ant_in_path++)
+		{
+			ant_path[ant_id - 1] = path_i;
+			ant_positions[ant_id - 1] = 0; // Empiezan en start
+			ant_finished[ant_id - 1] = 0;
+			ant_id++;
+		}
+	}
+	
+	// Simular movimientos paso a paso
+	while (finished_ants < vars->ant_count)
+	{
+		step++;
+		int moves_in_step = 0;
+		int *room_will_be_occupied = ft_calloc(vars->room_count, sizeof(int));
+		
+		// En cada turno, verificar qué hormigas pueden moverse
+		for (int ant = 0; ant < vars->ant_count; ant++)
+		{
+			// Si la hormiga ya terminó, continuar
+			if (ant_finished[ant])
+				continue;
+				
+			int path_index = ant_path[ant];
+			int current_pos = ant_positions[ant];
+			
+			// Si la hormiga ya está en el final, marcarla como terminada
+			if (current_pos >= paths[path_index]->length - 1)
+			{
+				if (!ant_finished[ant])
+				{
+					ant_finished[ant] = 1;
+					finished_ants++;
+				}
+				continue;
+			}
+			
+			// Verificar si puede moverse a la siguiente posición
+			int next_pos = current_pos + 1;
+			int next_room_id = paths[path_index]->room_ids[next_pos];
+			
+			// Start y End pueden tener múltiples hormigas, habitaciones intermedias solo una
+			if (vars->rooms[next_room_id]->is_start || vars->rooms[next_room_id]->is_end || 
+				!room_will_be_occupied[next_room_id])
+			{
+				// Marcar que esta habitación será ocupada en este turno
+				if (!vars->rooms[next_room_id]->is_start && !vars->rooms[next_room_id]->is_end)
+					room_will_be_occupied[next_room_id] = 1;
+				
+				// Mover la hormiga
+				ant_positions[ant] = next_pos;
+				
+				// Imprimir el movimiento
+				if (moves_in_step > 0)
+					printf(" ");
+				
+				printf("L%d->%s", ant + 1, vars->rooms[next_room_id]->room_name);
+				moves_in_step++;
+				
+				// Si llegó al final, marcarla como terminada
+				if (next_pos >= paths[path_index]->length - 1)
+				{
+					if (!ant_finished[ant])
+					{
+						ant_finished[ant] = 1;
+						finished_ants++;
+					}
+				}
+			}
+		}
+		
+		if (moves_in_step > 0)
+			printf("\n");
+			
+		free(room_will_be_occupied);
+		
+		// Prevenir bucles infinitos
+		if (step > 1000)
+		{
+			printf("Error: Too many steps, breaking simulation\n");
+			break;
+		}
+	}
+	
+	free(ant_positions);
+	free(ant_path);
+	free(ant_finished);
 }

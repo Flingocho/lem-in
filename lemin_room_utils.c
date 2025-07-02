@@ -18,10 +18,9 @@ t_room	*roomNew(char *name, int isStart, int roomNum)
 	new = ft_calloc(1, sizeof(t_room));
 	new->current_ant = -1;
 	new->room_name = name;
-	new->room_id = roomNum;
-	new->conn_count = 0;
-	new->conn_capacity = 1;
-	new->connections = ft_calloc(1, sizeof(t_room *));
+	new->room_id = roomNum;	new->conn_count = 0;
+	new->conn_capacity = 2; // Capacidad inicial de 2 para tener espacio para el terminador NULL
+	new->connections = ft_calloc(2, sizeof(t_room *));
 	new->connections[0] = NULL;
 	new->is_end = 0;
 	new->is_start = 0;
@@ -72,16 +71,19 @@ void	roomsClear(t_lemin *vars)
 
 void roomAddConn(t_room *room, t_room *new_connection)
 {
-    if (room->conn_count >= room->conn_capacity)
+    if (room->conn_count >= room->conn_capacity - 1) // Dejar espacio para NULL
     {
         room->conn_capacity *= 2;
         room->connections = ft_realloc(room->connections, room->conn_capacity/2 * sizeof(t_room*), room->conn_capacity * sizeof(t_room*));
     }
     room->connections[room->conn_count++] = new_connection;
-	if (new_connection->conn_count >= new_connection->conn_capacity)
+    room->connections[room->conn_count] = NULL; // Mantener terminador NULL
+    
+	if (new_connection->conn_count >= new_connection->conn_capacity - 1) // Dejar espacio para NULL
 	{
 		new_connection->conn_capacity *= 2;
         new_connection->connections = ft_realloc(new_connection->connections, new_connection->conn_capacity/2 * sizeof(t_room*), new_connection->conn_capacity * sizeof(t_room*));
 	}
 	new_connection->connections[new_connection->conn_count++] = room;
+    new_connection->connections[new_connection->conn_count] = NULL; // Mantener terminador NULL
 }

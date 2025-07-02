@@ -63,4 +63,5 @@ t_room	**addRoomToArray(t_room *room, t_lemin *vars);
 int		makeRoomsConns(char **input, int i, t_lemin *vars);
 t_path	**findAllPaths(t_lemin *vars);
 void	distributeAnts(t_path **paths, t_lemin *vars);
+void	simulateAntMovement(t_path **paths, t_lemin *vars);
 #endif

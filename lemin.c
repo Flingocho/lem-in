@@ -134,9 +134,33 @@ int makeRoomsConns(char **input, int i, t_lemin *vars)
 
 	while (input[i])
 	{
+		printf("DEBUG: Procesando línea de conexión %d: '%s'\n", i, input[i]);
 		line = ft_split(input[i], '-');
-		if (ft_dplen(line) != 2 || !findRoomName(vars, line[0]) || !findRoomName(vars, line[1]))
+		printf("DEBUG: Después del split, longitud: %zu\n", ft_dplen(line));
+		if (ft_dplen(line) >= 1)
+			printf("DEBUG: Primer elemento: '%s'\n", line[0]);
+		if (ft_dplen(line) >= 2)
+			printf("DEBUG: Segundo elemento: '%s'\n", line[1]);
+		
+		if (ft_dplen(line) != 2)
+		{
+			printf("DEBUG: Error - número incorrecto de elementos en la línea\n");
 			return (freedoublepointer(line), ft_printf("Error: Connection structure\n"), -1);
+		}
+		
+		if (!findRoomName(vars, line[0]))
+		{
+			printf("DEBUG: Error - habitación '%s' no encontrada\n", line[0]);
+			return (freedoublepointer(line), ft_printf("Error: Connection structure\n"), -1);
+		}
+		
+		if (!findRoomName(vars, line[1]))
+		{
+			printf("DEBUG: Error - habitación '%s' no encontrada\n", line[1]);
+			return (freedoublepointer(line), ft_printf("Error: Connection structure\n"), -1);
+		}
+		
+		printf("DEBUG: Conexión válida: '%s' -> '%s'\n", line[0], line[1]);
 		roomAddConn(findRoomName(vars, line[0]), findRoomName(vars, line[1]));
 		freedoublepointer(line);
 		i++;
@@ -146,29 +170,32 @@ int makeRoomsConns(char **input, int i, t_lemin *vars)
 
 int getRoomInfo(t_lemin *vars)
 {
-	int count = 0; // Contador para evitar bucles infinitos
-
 	char **input = extractData();
 	int i = -1;
+	
+	// Imprimir el input original primero
 	while (input[++i])
 		printf("%s\n", input[i]);
+	
+	// Resetear el índice y procesar el input
 	vars->room_count = 0;
-	makeRoomsArray(input, vars);
-	while (count < vars->room_count)
-	{
-		printf("name: %s number: %d   start: %d end: %d   connections:\n", vars->rooms[count]->room_name, vars->rooms[count]->room_id, vars->rooms[count]->is_start, vars->rooms[count]->is_end);
-		if (*vars->rooms[count]->connections)
-		{
-			int j = 0;
-			while (vars->rooms[count]->connections[j])
-			{
-				printf("	to: %s\n", vars->rooms[count]->connections[j]->room_name);
-				j++;
-			}
-		}
-		count++;
-	}
-	printf("\n");
+	if(makeRoomsArray(input, vars) == -1) // <-----------ESTO NO FUNCIONA COMO DEBERIA
+		exit(1);
+	// while (count < vars->room_count)
+	// {
+	// 	printf("name: %s number: %d   start: %d end: %d   connections:\n", vars->rooms[count]->room_name, vars->rooms[count]->room_id, vars->rooms[count]->is_start, vars->rooms[count]->is_end);
+	// 	if (*vars->rooms[count]->connections)
+	// 	{
+	// 		int j = 0;
+	// 		while (vars->rooms[count]->connections[j])
+	// 		{
+	// 			printf("	to: %s\n", vars->rooms[count]->connections[j]->room_name);
+	// 			j++;
+	// 		}
+	// 	}
+	// 	count++;
+	// }
+	// printf("\n");
 	t_path **res = findAllPaths(vars);
 	distributeAnts(res, vars);
 	if (!res)
@@ -187,13 +214,16 @@ int getRoomInfo(t_lemin *vars)
 			}
 			printf("\n");
 		}
+		printf("\n=== SIMULATION ===\n");
+		simulateAntMovement(res, vars);
+		
+		for (int i = 0; i < vars->path_count; i++)
+		{
+			free(res[i]->room_ids);
+			free(res[i]);
+		}
+		free(res);
 	}
-	for (int i = 0; i < vars->path_count; i++)
-	{
-		free(res[i]->room_ids);
-		free(res[i]);
-	}
-	free(res);
 	freedoublepointer(input);
 	return 0;
 }
