@@ -15,7 +15,8 @@ SRC_DIR = src
 
 SRC = lemin.c\
 		lemin_room_utils.c\
-		lemin_algorithm.c
+		lemin_algorithm.c\
+		intoverunderflow.c
 
 OBJ = $(SRC:.c=.o)
 

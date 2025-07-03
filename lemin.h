@@ -37,6 +37,8 @@ typedef struct room
 	char			*room_name;     // Consistencia en naming
 	int				is_start;       // Consistencia con naming
 	int				is_end;
+	int				x;
+	int				y;
 	int				conn_count;     // Mejor que roomConn
 	int				conn_capacity;  // Para realloc dinámico
 	struct room		**connections;
@@ -60,9 +62,11 @@ void	roomsClear(t_lemin *vars);
 void	roomAddConn(t_room *room, t_room *new_connection);
 t_room	*findRoomName(t_lemin *vars, char *name);
 t_room	*findRoomById(t_lemin *vars, int id);
+t_room	*findRoomCoord(t_lemin *vars, int x, int y);
 t_room	**addRoomToArray(t_room *room, t_lemin *vars);
 int		makeRoomsConns(char **input, int i, t_lemin *vars);
 t_path	**findAllPaths(t_lemin *vars);
 void	distributeAnts(t_path **paths, t_lemin *vars);
 void	simulateAntMovement(t_path **paths, t_lemin *vars);
+int		checkoverflow(const char *str);
 #endif

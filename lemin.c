@@ -18,17 +18,23 @@ char **extractData()
 	char *line;
 	int i;
 	int capacity;
+	char **temp;
 
 	i = 0;
 	capacity = 2;
 	res = ft_calloc(capacity, sizeof(char *));
+	if (!res)
+		return NULL;
 	line = get_next_line(0);
 	while (line)
 	{
 		if (i >= capacity - 1)
 		{
 			capacity *= 2;
-			res = ft_realloc(res, (capacity / 2) * sizeof(char *), capacity * sizeof(char *));
+			temp = ft_realloc(res, (capacity / 2) * sizeof(char *), capacity * sizeof(char *));
+			if (!temp)
+				return NULL;
+			res = temp;
 		}
 		res[i++] = ft_strtrim(line, "\n");
 		free(line);
@@ -46,11 +52,15 @@ int is_valid_room_line(char *line)
 	if (!line || line[0] == '#' || line[0] == 'L' || line[0] == '\0')
 		return (0);
 	parts = ft_split(line, ' ');
+	if (!parts)
+		return 0;
 	count = 0;
 	while (parts[count])
 		count++;
 	if (count == 3)
 	{
+		if (checkoverflow(parts[1]) == -1 || checkoverflow(parts[2]) == -1)
+			return (freedoublepointer(parts), 0);
 		freedoublepointer(parts);
 		return (1);
 	}
@@ -58,12 +68,18 @@ int is_valid_room_line(char *line)
 	return (0);
 }
 
-t_room *parse_room_from_line(char *line, int room_id)
+t_room *parse_room_from_line(char *line, int room_id, t_lemin *vars)
 {
 	char **parts = ft_split(line, ' ');
+	if (!parts)
+		return NULL;
 	t_room *room;
 
+	if (findRoomName(vars, parts[0]) || findRoomCoord(vars, ft_atoi(parts[1]), ft_atoi(parts[2])))
+		return NULL;
 	room = ft_calloc(1, sizeof(t_room));
+	if (!room)
+		return NULL;
 	room->room_name = ft_strdup(parts[0]);
 	room->room_id = room_id;
 	room->conn_capacity = 4;
@@ -71,6 +87,8 @@ t_room *parse_room_from_line(char *line, int room_id)
 	room->current_ant = -1;
 	room->is_start = 0;
 	room->is_end = 0;
+	room->x = ft_atoi(parts[1]);
+	room->y = ft_atoi(parts[2]);
 	freedoublepointer(parts);
 	return (room);
 }
@@ -84,8 +102,10 @@ int makeRoomsArray(char **input, t_lemin *vars)
 
 	if (input[0])
 		vars->ant_count = ft_atoi(input[0]);
+	if (vars->ant_count < 1)
+		return (ft_printf("Error: Number of ants\n"), -1);
 	i = 1;
-	while (input[i] && !ft_strchr(input[i], '-'))
+	while (input[i] && ft_strcount(input[i], '-') != 1)
 	{
 		if (ft_strncmp("##start", input[i], 7) == 0)
 		{
@@ -104,7 +124,9 @@ int makeRoomsArray(char **input, t_lemin *vars)
 		}
 		else if (is_valid_room_line(input[i]))
 		{
-			tmp = parse_room_from_line(input[i], vars->room_count);
+			tmp = parse_room_from_line(input[i], vars->room_count, vars);
+			if (!tmp)
+				return (ft_printf("Error: Invalid line %d\n", i + 1), -1);
 			if (next_is_start)
 			{
 				tmp->is_start = 1;
@@ -141,9 +163,9 @@ int makeRoomsConns(char **input, int i, t_lemin *vars)
 		}
 		line = ft_split(input[i], '-');
 		
-		if (ft_dplen(line) != 2)
+		if (ft_dplen(line) != 2 || ft_strcount(input[i], '-') != 1)
 		{
-			return (freedoublepointer(line), ft_printf("Error: Connection structure 1: line:%d, dplen:%i\n", i, ft_dplen(line)), -1);
+			return (freedoublepointer(line), ft_printf("Error: Connection structure 1: line:%d\n", i), -1);
 		}
 		
 		if (!findRoomName(vars, line[0]))
@@ -168,6 +190,8 @@ int getRoomInfo(t_lemin *vars)
 	char **input = extractData();
 	int i = -1;
 	
+	if (!input)
+		exit(1);
 	// Imprimir el input original primero
 	while (input[++i])
 		printf("%s\n", input[i]);

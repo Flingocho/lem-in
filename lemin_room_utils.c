@@ -55,6 +55,16 @@ t_room	*findRoomName(t_lemin *vars, char *name)
     return (NULL);
 }
 
+t_room	*findRoomCoord(t_lemin *vars, int x, int y)
+{
+	for (int i = 0; i < vars->room_count; i++)
+    {
+        if (vars->rooms[i]->x == x && vars->rooms[i]->y == y)
+            return (vars->rooms[i]);
+    }
+    return (NULL);
+}
+
 t_room	*findRoomById(t_lemin *vars, int id)
 {
 	for (int i = 0; i < vars->room_count; i++)
@@ -81,6 +91,11 @@ void	roomsClear(t_lemin *vars)
 
 void roomAddConn(t_room *room, t_room *new_connection)
 {
+	for (int i = 0; i < room->conn_count; i++)
+	{
+		if (room->connections[i] == new_connection)
+			return;
+	}
     if (room->conn_count >= room->conn_capacity - 1) // Dejar espacio para NULL
     {
         room->conn_capacity *= 2;
