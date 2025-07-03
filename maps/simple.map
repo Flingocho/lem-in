@@ -1,0 +1,39 @@
+5
+#Simple test map with different graph structures
+##start
+home 0 0
+##end
+goal 10 10
+# Linear path
+step1 2 2
+step2 4 4
+step3 6 6
+step4 8 8
+# Alternative branch
+alt1 3 1
+alt2 5 3
+alt3 7 5
+# Dead end
+dead1 1 5
+dead2 2 7
+# Cross connection
+cross 5 5
+# Connections
+home-step1
+step1-step2
+step2-step3
+step3-step4
+step4-goal
+# Alternative path
+home-alt1
+alt1-alt2
+alt2-alt3
+alt3-goal
+# Branch with dead end
+step1-dead1
+dead1-dead2
+# Cross connections
+step2-cross
+alt2-cross
+cross-step3
+cross-alt3

@@ -1,0 +1,20 @@
+10
+##start
+start 0 50
+##end
+end 300 50
+m1 100 50
+m2 200 50
+u1 100 100
+u2 200 100
+l1 100 0
+l2 200 0
+start-m1
+m1-m2
+m2-end
+start-u1
+u1-u2
+u2-end
+start-l1
+l1-l2
+l2-end

@@ -1,0 +1,49 @@
+15
+##start
+start 0 50
+##end
+end 200 50
+a1 40 50
+a2 80 50
+a3 120 50
+a4 160 50
+b1 40 80
+b2 80 90
+b3 120 80
+b4 160 80
+c1 40 20
+c2 80 10
+c3 120 20
+c4 160 20
+hub 100 50
+start-a1
+a1-a2
+a2-a3
+a3-a4
+a4-end
+start-b1
+b1-b2
+b2-b3
+b3-b4
+b4-end
+start-c1
+c1-c2
+c2-c3
+c3-c4
+c4-end
+start-hub
+hub-end
+a2-hub
+b2-hub
+c2-hub
+hub-a3
+hub-b3
+hub-c3
+a1-b1
+b1-c1
+a2-b2
+b2-c2
+a3-b3
+b3-c3
+a4-b4
+b4-c4

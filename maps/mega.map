@@ -1,0 +1,315 @@
+100
+##start
+start 10 10
+##end
+end 90 90
+hub1_a 20 15
+hub1_b 20 25
+hub1_c 20 35
+dist2_a 35 10
+dist2_b 35 20
+dist2_c 35 30
+dist2_d 35 40
+dist2_e 35 50
+proc3_a 50 5
+proc3_b 50 15
+proc3_c 50 25
+proc3_d 50 35
+proc3_e 50 45
+proc3_f 50 55
+junc4_a 65 8
+junc4_b 65 18
+junc4_c 65 28
+junc4_d 65 38
+junc4_e 65 48
+junc4_f 65 58
+filter5_a 80 12
+filter5_b 80 22
+filter5_c 80 32
+filter5_d 80 42
+filter5_e 80 52
+bridge_12_a 27 12
+bridge_12_b 27 22
+bridge_12_c 27 32
+bridge_23_a 42 12
+bridge_23_b 42 22
+bridge_23_c 42 32
+bridge_23_d 42 42
+bridge_34_a 57 13
+bridge_34_b 57 23
+bridge_34_c 57 33
+bridge_34_d 57 43
+bridge_34_e 57 53
+bridge_45_a 72 15
+bridge_45_b 72 25
+bridge_45_c 72 35
+bridge_45_d 72 45
+bypass_1 15 45
+bypass_2 30 55
+bypass_3 45 65
+bypass_4 60 70
+bypass_5 75 65
+emergency_1 25 5
+emergency_2 40 8
+emergency_3 55 12
+emergency_4 70 15
+emergency_5 85 20
+circle_n 40 60
+circle_e 60 80
+circle_s 80 60
+circle_w 60 40
+special_alpha 33 33
+special_beta 66 66
+special_gamma 45 75
+special_delta 75 45
+bottleneck_1 38 38
+bottleneck_2 62 62
+failsafe_a 22 50
+failsafe_b 48 26
+failsafe_c 74 74
+conduit_main 55 35
+conduit_alt1 45 40
+conduit_alt2 65 30
+stabilizer_1 35 65
+stabilizer_2 65 35
+balancer_a 30 45
+balancer_b 70 55
+express_1 25 60
+express_2 45 80
+express_3 75 40
+checkpoint_1 32 28
+checkpoint_2 58 48
+checkpoint_3 78 68
+overflow_a 18 38
+overflow_b 38 18
+overflow_c 82 58
+overflow_d 58 82
+mesh_1 28 48
+mesh_2 48 28
+mesh_3 52 52
+mesh_4 72 32
+tunnel_a 15 75
+tunnel_b 85 25
+multi_dist_1 26 26
+multi_dist_2 74 26
+multi_dist_3 26 74
+aggregator_1 85 35
+aggregator_2 85 45
+aggregator_3 85 55
+nexus_core 45 45
+relay_alpha 22 78
+relay_beta 78 22
+super_hub_1 12 60
+super_hub_2 88 40
+micro_gate_1 33 67
+micro_gate_2 67 33
+flux_node_a 41 59
+flux_node_b 59 41
+quantum_bridge 50 50
+warp_gate 25 75
+star_junction 75 25
+cosmic_relay 50 75
+void_bridge 25 25
+nexus_link 75 75
+start-hub1_a
+start-hub1_b
+start-hub1_c
+start-emergency_1
+start-tunnel_a
+hub1_a-dist2_a
+hub1_a-dist2_b
+hub1_a-bridge_12_a
+hub1_a-emergency_2
+hub1_b-dist2_b
+hub1_b-dist2_c
+hub1_b-bridge_12_b
+hub1_b-bypass_1
+hub1_c-dist2_c
+hub1_c-dist2_d
+hub1_c-bridge_12_c
+hub1_c-failsafe_a
+dist2_a-proc3_a
+dist2_a-proc3_b
+dist2_a-bridge_23_a
+dist2_a-checkpoint_1
+dist2_b-proc3_b
+dist2_b-proc3_c
+dist2_b-bridge_23_b
+dist2_b-special_alpha
+dist2_c-proc3_c
+dist2_c-proc3_d
+dist2_c-bridge_23_c
+dist2_c-balancer_a
+dist2_d-proc3_d
+dist2_d-proc3_e
+dist2_d-bridge_23_d
+dist2_d-bottleneck_1
+dist2_e-proc3_e
+dist2_e-proc3_f
+dist2_e-bypass_2
+dist2_e-stabilizer_1
+proc3_a-junc4_a
+proc3_a-junc4_b
+proc3_a-bridge_34_a
+proc3_a-emergency_3
+proc3_b-junc4_b
+proc3_b-junc4_c
+proc3_b-bridge_34_b
+proc3_b-failsafe_b
+proc3_c-junc4_c
+proc3_c-junc4_d
+proc3_c-bridge_34_c
+proc3_c-conduit_main
+proc3_d-junc4_d
+proc3_d-junc4_e
+proc3_d-bridge_34_d
+proc3_d-conduit_alt1
+proc3_e-junc4_e
+proc3_e-junc4_f
+proc3_e-bridge_34_e
+proc3_e-conduit_alt2
+proc3_f-junc4_f
+proc3_f-bypass_3
+proc3_f-express_2
+junc4_a-filter5_a
+junc4_a-bridge_45_a
+junc4_a-emergency_4
+junc4_b-filter5_a
+junc4_b-filter5_b
+junc4_b-bridge_45_b
+junc4_b-checkpoint_2
+junc4_c-filter5_b
+junc4_c-filter5_c
+junc4_c-bridge_45_c
+junc4_c-special_beta
+junc4_d-filter5_c
+junc4_d-filter5_d
+junc4_d-bridge_45_d
+junc4_d-bottleneck_2
+junc4_e-filter5_d
+junc4_e-filter5_e
+junc4_e-express_3
+junc4_f-filter5_e
+junc4_f-bypass_4
+junc4_f-stabilizer_2
+filter5_a-end
+filter5_a-aggregator_1
+filter5_a-emergency_5
+filter5_b-end
+filter5_b-aggregator_1
+filter5_b-aggregator_2
+filter5_c-end
+filter5_c-aggregator_2
+filter5_c-aggregator_3
+filter5_d-end
+filter5_d-aggregator_3
+filter5_d-checkpoint_3
+filter5_e-end
+filter5_e-aggregator_3
+filter5_e-failsafe_c
+bridge_12_a-bridge_23_a
+bridge_12_b-bridge_23_b
+bridge_12_c-bridge_23_c
+bridge_23_a-bridge_34_a
+bridge_23_b-bridge_34_b
+bridge_23_c-bridge_34_c
+bridge_23_d-bridge_34_d
+bridge_34_a-bridge_45_a
+bridge_34_b-bridge_45_b
+bridge_34_c-bridge_45_c
+bridge_34_d-bridge_45_d
+bridge_34_e-filter5_e
+bridge_45_a-aggregator_1
+bridge_45_b-aggregator_2
+bridge_45_c-aggregator_3
+bridge_45_d-end
+bypass_1-bypass_2
+bypass_2-bypass_3
+bypass_3-bypass_4
+bypass_4-bypass_5
+bypass_5-end
+emergency_1-emergency_2
+emergency_2-emergency_3
+emergency_3-emergency_4
+emergency_4-emergency_5
+emergency_5-end
+circle_n-circle_e
+circle_e-circle_s
+circle_s-circle_w
+circle_w-circle_n
+circle_n-proc3_f
+circle_e-junc4_f
+circle_s-filter5_e
+circle_w-proc3_c
+special_alpha-special_beta
+special_beta-special_gamma
+special_gamma-special_delta
+special_delta-special_alpha
+special_alpha-conduit_main
+special_beta-bottleneck_2
+special_gamma-express_2
+special_delta-express_3
+bottleneck_1-bottleneck_2
+bottleneck_1-conduit_alt1
+bottleneck_2-conduit_alt2
+failsafe_a-failsafe_b
+failsafe_b-failsafe_c
+failsafe_a-overflow_a
+failsafe_b-overflow_b
+failsafe_c-overflow_c
+conduit_main-conduit_alt1
+conduit_main-conduit_alt2
+conduit_alt1-balancer_b
+conduit_alt2-balancer_b
+balancer_a-balancer_b
+balancer_a-mesh_1
+balancer_b-mesh_4
+express_1-express_2
+express_2-express_3
+express_1-tunnel_a
+express_3-tunnel_b
+checkpoint_1-checkpoint_2
+checkpoint_2-checkpoint_3
+checkpoint_3-end
+overflow_a-overflow_b
+overflow_b-overflow_c
+overflow_c-overflow_d
+overflow_d-mesh_3
+mesh_1-mesh_2
+mesh_2-mesh_3
+mesh_3-mesh_4
+mesh_4-mesh_1
+mesh_1-multi_dist_1
+mesh_2-multi_dist_1
+mesh_3-multi_dist_3
+mesh_4-multi_dist_2
+tunnel_a-tunnel_b
+tunnel_a-express_1
+tunnel_b-aggregator_1
+multi_dist_1-multi_dist_2
+multi_dist_2-multi_dist_3
+multi_dist_3-multi_dist_1
+multi_dist_1-stabilizer_1
+multi_dist_2-stabilizer_2
+multi_dist_3-express_2
+aggregator_1-aggregator_2
+aggregator_2-aggregator_3
+aggregator_1-end
+aggregator_2-end
+aggregator_3-end
+hub1_a-hub1_c
+dist2_a-dist2_e
+proc3_b-proc3_e
+junc4_a-junc4_f
+filter5_a-filter5_e
+stabilizer_1-stabilizer_2
+balancer_a-mesh_2
+conduit_main-special_beta
+checkpoint_1-overflow_a
+emergency_3-express_1
+bypass_2-circle_n
+tunnel_a-special_gamma
+multi_dist_2-bottleneck_2
+mesh_3-special_delta
+failsafe_b-conduit_alt1
+overflow_c-aggregator_2

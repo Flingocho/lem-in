@@ -1,0 +1,73 @@
+50
+##start
+start 1 1
+##end
+end 19 19
+hub1 5 3
+hub2 15 3
+hub3 10 8
+bridge1 3 6
+bridge2 7 6
+bridge3 13 6
+bridge4 17 6
+gate1 2 10
+gate2 8 10
+gate3 12 10
+gate4 18 10
+junction1 4 13
+junction2 9 13
+junction3 14 13
+connector1 6 16
+connector2 11 16
+relay1 16 16
+start-hub1
+start-bridge1
+start-gate1
+hub1-hub2
+hub1-bridge1
+hub1-bridge2
+hub1-gate1
+hub2-hub3
+hub2-bridge3
+hub2-bridge4
+hub2-gate3
+hub3-bridge2
+hub3-bridge3
+hub3-gate2
+hub3-gate3
+bridge1-bridge2
+bridge1-gate1
+bridge1-gate2
+bridge2-bridge3
+bridge2-gate1
+bridge2-gate2
+bridge2-junction1
+bridge3-bridge4
+bridge3-gate2
+bridge3-gate3
+bridge3-junction2
+bridge4-gate3
+bridge4-gate4
+bridge4-junction3
+gate1-gate2
+gate1-junction1
+gate2-gate3
+gate2-junction1
+gate2-junction2
+gate3-gate4
+gate3-junction2
+gate3-junction3
+gate4-junction3
+gate4-relay1
+junction1-junction2
+junction1-connector1
+junction2-junction3
+junction2-connector1
+junction2-connector2
+junction3-connector2
+junction3-relay1
+connector1-connector2
+connector1-end
+connector2-end
+connector2-relay1
+relay1-end
