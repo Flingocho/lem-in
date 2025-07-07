@@ -5,6 +5,9 @@ import re
 from typing import List, Tuple, Dict, Set, Optional
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
+import numpy as np
+from matplotlib.patches import Circle, FancyBboxPatch
+import matplotlib.patches as mpatches
 
 class Node:
     """Representa un nodo con nombre y coordenadas"""
@@ -190,11 +193,14 @@ def parse_lem_in_with_simulation() -> Tuple[int, List[Node], List[Connection], L
     return num_ants, nodes, connections, paths, simulation_lines
 
 def _add_interactive_tooltip(fig, ax, scatter, nodes: List[Node]):
-    """Añade tooltip interactivo"""
+    """Añade tooltip interactivo con estilo mejorado"""
     annot = ax.annotate('', xy=(0,0), xytext=(20,20), textcoords="offset points",
-                       bbox=dict(boxstyle="round,pad=0.5", facecolor='yellow', alpha=0.9),
-                       arrowprops=dict(arrowstyle="->", connectionstyle="arc3,rad=0"),
-                       fontsize=10, fontweight='bold')
+                       bbox=dict(boxstyle="round,pad=0.8", facecolor='#2D2D2D', 
+                               edgecolor='#00FF88', linewidth=2, alpha=0.95),
+                       arrowprops=dict(arrowstyle="->", connectionstyle="arc3,rad=0.3",
+                                     color='#00FF88', linewidth=2),
+                       fontsize=12, fontweight='bold', color='white',
+                       zorder=1000)  # Asegurar que esté por encima de todo
     annot.set_visible(False)
     
     def update_annot(ind):
@@ -203,13 +209,18 @@ def _add_interactive_tooltip(fig, ax, scatter, nodes: List[Node]):
         node = nodes[ind["ind"][0]]
         
         # Construir texto del tooltip con información del nodo
-        tooltip_text = f"{node.name}\n({node.x}, {node.y})"
+        tooltip_text = f"NODE: {node.name}\nPOS: ({node.x}, {node.y})"
         if node.is_start:
-            tooltip_text += "\n[INICIO]"
+            tooltip_text += "\n[START]"
         elif node.is_end:
-            tooltip_text += "\n[FINAL]"
+            tooltip_text += "\n[END]"
         
         annot.set_text(tooltip_text)
+        # Ajustar posición para evitar que se salga de la pantalla
+        if pos[0] > ax.get_xlim()[1] * 0.8:  # Si está muy a la derecha
+            annot.set_position((-40, 20))  # Mover tooltip a la izquierda
+        else:
+            annot.set_position((20, 20))  # Posición normal
     
     def hover(event):
         if event.inaxes == ax:
@@ -225,14 +236,57 @@ def _add_interactive_tooltip(fig, ax, scatter, nodes: List[Node]):
     
     fig.canvas.mpl_connect("motion_notify_event", hover)
 
+def _apply_dark_theme(fig, ax):
+    """Aplica tema oscuro elegante"""
+    # Configurar colores de fondo
+    fig.patch.set_facecolor('#0F0F0F')
+    ax.set_facecolor('#1A1A1A')
+    
+    # Configurar grid con estilo futurista
+    ax.grid(True, alpha=0.3, color='#333333', linewidth=0.8, linestyle='--')
+    
+    # Configurar ejes
+    ax.spines['bottom'].set_color('#555555')
+    ax.spines['top'].set_color('#555555')
+    ax.spines['right'].set_color('#555555')
+    ax.spines['left'].set_color('#555555')
+    ax.spines['bottom'].set_linewidth(2)
+    ax.spines['top'].set_linewidth(2)
+    ax.spines['right'].set_linewidth(2)
+    ax.spines['left'].set_linewidth(2)
+    
+    # Configurar etiquetas de ejes
+    ax.tick_params(axis='x', colors='#CCCCCC', labelsize=10)
+    ax.tick_params(axis='y', colors='#CCCCCC', labelsize=10)
+    ax.xaxis.label.set_color('#CCCCCC')
+    ax.yaxis.label.set_color('#CCCCCC')
+    ax.xaxis.label.set_fontsize(12)
+    ax.yaxis.label.set_fontsize(12)
+    ax.xaxis.label.set_fontweight('bold')
+    ax.yaxis.label.set_fontweight('bold')
+
+def _add_glow_effect(ax, x, y, color, size=50):
+    """Añade efecto de resplandor a los nodos importantes"""
+    # Crear círculos concéntricos para el efecto de resplandor
+    for i in range(3):
+        alpha = 0.1 - i * 0.03
+        radius = size * (1 + i * 0.3)
+        circle = Circle((x, y), radius, facecolor=color, alpha=alpha, 
+                       edgecolor='none', zorder=1)
+        ax.add_patch(circle)
+
 def show_graph(num_ants: int, nodes: List[Node], connections: List[Connection], paths: List[Path] = None):
-    """Muestra los nodos y conexiones en una ventana interactiva"""
+    """Muestra los nodos y conexiones en una ventana interactiva con estilo mejorado"""
     if not nodes:
         print("No hay nodos para mostrar")
         return
     
-    # Crear figura
-    fig, ax = plt.subplots(figsize=(14, 10))
+    # Crear figura con estilo moderno
+    plt.style.use('dark_background')
+    fig, ax = plt.subplots(figsize=(16, 12))
+    
+    # Aplicar tema oscuro
+    _apply_dark_theme(fig, ax)
     
     # Crear diccionario de nodos para búsqueda rápida
     node_dict = {node.name: node for node in nodes}
@@ -242,11 +296,14 @@ def show_graph(num_ants: int, nodes: List[Node], connections: List[Connection], 
     if paths:
         for path in paths:
             for i in range(len(path.nodes) - 1):
-                # Agregar conexión en ambas direcciones
                 path_connections.add((path.nodes[i], path.nodes[i + 1]))
                 path_connections.add((path.nodes[i + 1], path.nodes[i]))
     
-    # Dibujar conexiones normales primero
+    # Paleta de colores moderna para caminos
+    path_colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', 
+                   '#F06292', '#AED581', '#FFB74D', '#BA68C8', '#81C784']
+    
+    # Dibujar conexiones normales con efecto de profundidad
     for connection in connections:
         if connection.node1 in node_dict and connection.node2 in node_dict:
             node1 = node_dict[connection.node1]
@@ -254,18 +311,22 @@ def show_graph(num_ants: int, nodes: List[Node], connections: List[Connection], 
             
             # Verificar si esta conexión es parte de un camino
             if (connection.node1, connection.node2) in path_connections:
-                continue  # La dibujaremos después como camino resaltado
+                continue
             
+            # Línea principal
             ax.plot([node1.x, node2.x], [node1.y, node2.y], 
-                   'gray', linewidth=1, alpha=0.6, zorder=1)
+                   color='#444444', linewidth=1.5, alpha=0.7, zorder=2)
+            
+            # Línea de brillo sutil
+            ax.plot([node1.x, node2.x], [node1.y, node2.y], 
+                   color='#666666', linewidth=0.5, alpha=0.5, zorder=2)
     
-    # Dibujar caminos resaltados
+    # Dibujar caminos resaltados con efectos especiales
     if paths:
-        colors = ['red', 'blue', 'green', 'orange', 'purple', 'brown', 'pink', 'cyan']
         for i, path in enumerate(paths):
-            color = colors[i % len(colors)]
+            color = path_colors[i % len(path_colors)]
             # Calcular grosor basado en el número de hormigas
-            line_width = max(3, min(10, 2 + path.ant_count * 0.5))
+            base_width = max(4, min(12, 3 + path.ant_count * 0.6))
             
             for j in range(len(path.nodes) - 1):
                 node1_name = path.nodes[j]
@@ -275,106 +336,161 @@ def show_graph(num_ants: int, nodes: List[Node], connections: List[Connection], 
                     node1 = node_dict[node1_name]
                     node2 = node_dict[node2_name]
                     
+                    # Línea de fondo (más gruesa, más oscura)
                     ax.plot([node1.x, node2.x], [node1.y, node2.y], 
-                           color=color, linewidth=line_width, alpha=0.8, zorder=3,
-                           label=f'Camino {path.path_num} ({path.ant_count} hormigas)' if j == 0 else "")
+                           color=color, linewidth=base_width + 2, alpha=0.4, zorder=3)
+                    
+                    # Línea principal
+                    ax.plot([node1.x, node2.x], [node1.y, node2.y], 
+                           color=color, linewidth=base_width, alpha=0.9, zorder=4,
+                           label=f'Path {path.path_num} ({path.ant_count} ants)' if j == 0 else "")
+                    
+                    # Línea de brillo
+                    ax.plot([node1.x, node2.x], [node1.y, node2.y], 
+                           color='white', linewidth=base_width * 0.3, alpha=0.6, zorder=5)
     
-    # Preparar datos para nodos
+    # Preparar datos para nodos con colores mejorados
     x_coords = [node.x for node in nodes]
     y_coords = [node.y for node in nodes]
-    colors = []
     
-    # Asignar colores según tipo de nodo
+    # Encontrar nodos especiales para efectos
+    start_nodes = [node for node in nodes if node.is_start]
+    end_nodes = [node for node in nodes if node.is_end]
+    
+    # Añadir efectos de resplandor a nodos especiales
+    for node in start_nodes:
+        _add_glow_effect(ax, node.x, node.y, '#00FF88', 15)
+    
+    for node in end_nodes:
+        _add_glow_effect(ax, node.x, node.y, '#FF4444', 15)
+    
+    # Configurar tamaños y colores de nodos
+    node_sizes = []
+    node_colors = []
+    edge_colors = []
+    
     for node in nodes:
         if node.is_start:
-            colors.append('green')
+            node_sizes.append(300)
+            node_colors.append('#00FF88')
+            edge_colors.append('#00CC66')
         elif node.is_end:
-            colors.append('red')
+            node_sizes.append(300)
+            node_colors.append('#FF4444')
+            edge_colors.append('#CC2222')
         else:
-            colors.append('blue')
+            node_sizes.append(150)
+            node_colors.append('#4A9EFF')
+            edge_colors.append('#3A7ECC')
     
-    # Ajustar tamaño según cantidad de nodos
-    if len(nodes) > 5000:
-        point_size = 30
-        alpha = 0.7
-    elif len(nodes) > 1000:
-        point_size = 60
-        alpha = 0.8
-    else:
-        point_size = 120
-        alpha = 0.9
+    # Crear gráfico de nodos con efectos mejorados
+    scatter = ax.scatter(x_coords, y_coords, s=node_sizes, c=node_colors, 
+                        alpha=0.9, edgecolors=edge_colors, linewidth=2.5, 
+                        zorder=6, marker='o')
     
-    # Crear gráfico de nodos
-    scatter = ax.scatter(x_coords, y_coords, s=point_size, c=colors, alpha=alpha, 
-                        edgecolors='black', linewidth=1, zorder=4)
+    # Añadir segundo anillo para nodos especiales
+    for i, node in enumerate(nodes):
+        if node.is_start or node.is_end:
+            ax.scatter(node.x, node.y, s=node_sizes[i] * 1.3, 
+                      c='none', edgecolors=node_colors[i], linewidth=1, 
+                      alpha=0.6, zorder=5)
     
-    # Añadir nombres de nodos como etiquetas
+    # Añadir nombres de nodos con estilo mejorado
     for node in nodes:
-        ax.annotate(node.name, (node.x, node.y), xytext=(5, 5), 
-                   textcoords='offset points', fontsize=8, fontweight='bold',
-                   bbox=dict(boxstyle='round,pad=0.2', facecolor='white', alpha=0.7))
+        # Fondo para el texto
+        bbox_props = dict(boxstyle='round,pad=0.3', facecolor='#2D2D2D', 
+                         alpha=0.8, edgecolor='#555555', linewidth=1)
+        
+        if node.is_start:
+            text_color = '#00FF88'
+            bbox_props['edgecolor'] = '#00FF88'
+        elif node.is_end:
+            text_color = '#FF4444'
+            bbox_props['edgecolor'] = '#FF4444'
+        else:
+            text_color = '#CCCCCC'
+        
+        ax.annotate(node.name, (node.x, node.y), xytext=(8, 8), 
+                   textcoords='offset points', fontsize=9, fontweight='bold',
+                   color=text_color, bbox=bbox_props, zorder=7)
     
     # Añadir interactividad
     _add_interactive_tooltip(fig, ax, scatter, nodes)
     
-    # Configurar ejes y título
-    ax.set_xlabel('X')
-    ax.set_ylabel('Y')
-    title = f'Lem-in Graph: {num_ants} hormigas, {len(nodes)} nodos, {len(connections)} conexiones'
+    # Configurar título con estilo futurista
+    title = f'Lem-in Graph Visualizer\n{num_ants} ants • {len(nodes)} nodes • {len(connections)} connections'
     if paths:
-        title += f', {len(paths)} camino(s) encontrado(s)'
-    ax.set_title(title)
-    ax.grid(True, alpha=0.3)
+        title += f' • {len(paths)} path(s) found'
     
-    # Añadir leyenda
+    ax.set_title(title, fontsize=16, fontweight='bold', color='#FFFFFF', 
+                pad=20, bbox=dict(boxstyle='round,pad=1', facecolor='#333333', 
+                                alpha=0.8, edgecolor='#00FF88', linewidth=2))
+    
+    # Etiquetas de ejes con estilo
+    ax.set_xlabel('X Coordinate', fontsize=12, fontweight='bold', color='#CCCCCC')
+    ax.set_ylabel('Y Coordinate', fontsize=12, fontweight='bold', color='#CCCCCC')
+    
+    # Crear leyenda con estilo mejorado
     legend_elements = [
-        plt.Line2D([0], [0], marker='o', color='w', markerfacecolor='green', 
-                   markersize=10, label='Inicio', markeredgecolor='black'),
-        plt.Line2D([0], [0], marker='o', color='w', markerfacecolor='red', 
-                   markersize=10, label='Final', markeredgecolor='black'),
-        plt.Line2D([0], [0], marker='o', color='w', markerfacecolor='blue', 
-                   markersize=10, label='Nodo', markeredgecolor='black'),
-        plt.Line2D([0], [0], color='gray', linewidth=2, label='Conexión')
+        plt.Line2D([0], [0], marker='o', color='w', markerfacecolor='#00FF88', 
+                   markersize=12, label='START', markeredgecolor='#00CC66', 
+                   markeredgewidth=2),
+        plt.Line2D([0], [0], marker='o', color='w', markerfacecolor='#FF4444', 
+                   markersize=12, label='END', markeredgecolor='#CC2222',
+                   markeredgewidth=2),
+        plt.Line2D([0], [0], marker='o', color='w', markerfacecolor='#4A9EFF', 
+                   markersize=10, label='NODE', markeredgecolor='#3A7ECC',
+                   markeredgewidth=2),
+        plt.Line2D([0], [0], color='#666666', linewidth=3, label='CONNECTION')
     ]
     
     # Añadir caminos a la leyenda
     if paths:
-        path_colors = ['red', 'blue', 'green', 'orange', 'purple', 'brown', 'pink', 'cyan']
         for i, path in enumerate(paths):
             color = path_colors[i % len(path_colors)]
             legend_elements.append(
                 plt.Line2D([0], [0], color=color, linewidth=4, 
-                          label=f'Camino {path.path_num} ({path.ant_count} hormigas)')
+                          label=f'Path {path.path_num} ({path.ant_count} ants)')
             )
     
-    ax.legend(handles=legend_elements, loc='upper right')
+    # Configurar leyenda con estilo oscuro
+    legend = ax.legend(handles=legend_elements, loc='upper right', 
+                      frameon=True, fancybox=True, shadow=True,
+                      facecolor='#2D2D2D', edgecolor='#555555', 
+                      fontsize=10, labelcolor='#CCCCCC')
+    legend.get_frame().set_alpha(0.9)
+    legend.get_frame().set_linewidth(2)
     
-    # Ajustar límites
+    # Ajustar límites con márgenes elegantes
     if x_coords and y_coords:
         min_x, max_x = min(x_coords), max(x_coords)
         min_y, max_y = min(y_coords), max(y_coords)
-        margin_x = max(1, (max_x - min_x) * 0.1)
-        margin_y = max(1, (max_y - min_y) * 0.1)
+        margin_x = max(5, (max_x - min_x) * 0.15)
+        margin_y = max(5, (max_y - min_y) * 0.15)
         
         ax.set_xlim(min_x - margin_x, max_x + margin_x)
         ax.set_ylim(min_y - margin_y, max_y + margin_y)
     
-    # Habilitar navegación mejorada
+    # Configurar ventana
     fig.canvas.toolbar_visible = True
+    fig.canvas.manager.set_window_title('Lem-in Graph Visualizer - Dark Theme')
     
     plt.tight_layout()
     plt.show()
 
 def main():
-    """Función principal"""
+    """Función principal con mensajes mejorados"""
+    print(">> Iniciando Lem-in Graph Visualizer...")
+    print(">> Procesando datos de entrada...")
+    
     num_ants, nodes, connections, paths, simulation_lines = parse_lem_in_with_simulation()
     
     if not nodes:
-        print("No se encontraron nodos válidos en la entrada")
+        print("ERROR: No se encontraron nodos válidos en la entrada")
         return
     
-    # Mostrar estadísticas
-    print(f"=== Estadísticas del Grafo ===")
+    # Mostrar estadísticas con estilo
+    print(f"\n=== ESTADISTICAS DEL GRAFO ===")
     print(f"Hormigas: {num_ants}")
     print(f"Nodos: {len(nodes)}")
     print(f"Conexiones: {len(connections)}")
@@ -386,12 +502,12 @@ def main():
     if start_nodes:
         print(f"Nodo de inicio: {start_nodes[0].name} ({start_nodes[0].x}, {start_nodes[0].y})")
     else:
-        print("⚠️  No se encontró nodo de inicio")
+        print("WARNING: No se encontró nodo de inicio")
         
     if end_nodes:
         print(f"Nodo final: {end_nodes[0].name} ({end_nodes[0].x}, {end_nodes[0].y})")
     else:
-        print("⚠️  No se encontró nodo final")
+        print("WARNING: No se encontró nodo final")
     
     # Validar conexiones
     node_names = {node.name for node in nodes}
@@ -406,7 +522,7 @@ def main():
     
     print(f"Conexiones válidas: {valid_connections}")
     if invalid_connections:
-        print(f"⚠️  Conexiones inválidas: {len(invalid_connections)}")
+        print(f"WARNING: Conexiones inválidas: {len(invalid_connections)}")
         if len(invalid_connections) <= 5:
             print(f"   {', '.join(invalid_connections)}")
         else:
@@ -414,17 +530,17 @@ def main():
     
     # Mostrar información de caminos
     if paths:
-        print(f"\n=== Caminos Encontrados ===")
+        print(f"\n=== CAMINOS ENCONTRADOS ===")
         for path in paths:
             print(f"Camino {path.path_num}: {path.ant_count} hormigas")
-            print(f"  Ruta: {' -> '.join(path.nodes)}")
-            print(f"  Longitud: {len(path.nodes)} nodos")
+            print(f"   Ruta: {' -> '.join(path.nodes)}")
+            print(f"   Longitud: {len(path.nodes)} nodos")
     
     # Mostrar información de simulación
     if simulation_lines:
         print(f"\nSimulación: {len(simulation_lines)} pasos registrados")
     
-    print(f"\n🚀 Abriendo visualización...")
+    print(f"\n>> Abriendo visualización con tema oscuro...")
     
     show_graph(num_ants, nodes, connections, paths)
 
