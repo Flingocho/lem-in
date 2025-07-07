@@ -6,7 +6,7 @@
 /*   By: jainavas <jainavas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 22:09:06 by jainavas          #+#    #+#             */
-/*   Updated: 2025/07/03 00:22:29 by jainavas         ###   ########.fr       */
+/*   Updated: 2025/07/07 15:35:28 by jainavas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,6 @@ t_path **findAllPaths(t_lemin *vars)
 		i++;
 		markUsedPath(path, perm_visited);
 		
-		// Si es un camino directo (solo start y end), no buscar más
 		if (path->length == 2)
 			break;
 	}
@@ -140,7 +139,6 @@ void	distributeAnts(t_path **paths, t_lemin *vars)
 
 void	simulateAntMovement(t_path **paths, t_lemin *vars)
 {
-	// Array para rastrear la posición de cada hormiga en su camino
 	int *ant_positions = ft_calloc(vars->ant_count, sizeof(int));
 	int *ant_path = ft_calloc(vars->ant_count, sizeof(int));
 	int *ant_finished = ft_calloc(vars->ant_count, sizeof(int));
@@ -148,7 +146,6 @@ void	simulateAntMovement(t_path **paths, t_lemin *vars)
 	int finished_ants = 0;
 	int step = 0;
 	
-	// Asignar hormigas a sus caminos
 	for (int path_i = 0; path_i < vars->path_count; path_i++)
 	{
 		for (int ant_in_path = 0; ant_in_path < paths[path_i]->ants_assigned; ant_in_path++)

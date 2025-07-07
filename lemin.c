@@ -101,19 +101,27 @@ int makeRoomsArray(char **input, t_lemin *vars)
 	int next_is_end = 0;
 
 	if (input[0])
-		vars->ant_count = ft_atoi(input[0]);
+	{
+		char **spl = ft_split(input[0], ' ');
+		if (!spl)
+			return (ft_printf("Error: Number of ants\n"), -1);
+		if (!spl[0] || ft_dplen(spl) != 1 || checkoverflow(spl[0]) == -1)
+			return (freedoublepointer(spl), ft_printf("Error: Number of ants\n"), -1);
+		vars->ant_count = ft_atoi(spl[0]);
+		freedoublepointer(spl);
+	}
 	if (vars->ant_count < 1)
 		return (ft_printf("Error: Number of ants\n"), -1);
 	i = 1;
 	while (input[i] && ft_strcount(input[i], '-') != 1)
 	{
-		if (ft_strncmp("##start", input[i], 7) == 0)
+		if (ft_strncmp("##start", input[i], 8) == 0)
 		{
 			if (vars->start_room)
 				return (ft_printf("Error: Too many ##start\n"), -1);
 			next_is_start = 1;
 		}
-		else if (ft_strncmp("##end", input[i], 5) == 0)
+		else if (ft_strncmp("##end", input[i], 6) == 0)
 		{
 			if (vars->end_room)
 				return (ft_printf("Error: Too many ##end\n"), -1);
@@ -216,11 +224,11 @@ int getRoomInfo(t_lemin *vars)
 	// }
 	// printf("\n");
 	t_path **res = findAllPaths(vars);
-	distributeAnts(res, vars);
 	if (!res)
 		printf("Camino no encontrado\n");
 	else
 	{
+		distributeAnts(res, vars);
 		for (int j = 0; j < vars->path_count; j++)
 		{
 			if (!res[j])
