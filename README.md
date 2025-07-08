@@ -1,4 +1,4 @@
-# � Lem-in - Ant Colony Pathfinding Simulation
+# Lem-in - Ant Colony Pathfinding Simulation
 
 <div align="center">
   <img src="https://img.shields.io/badge/Language-C-blue" alt="Language">
@@ -12,6 +12,16 @@
   <img src="https://img.shields.io/badge/Python-Visualizer-yellow" alt="Python">
   <img src="https://img.shields.io/badge/Matplotlib-Graphs-orange" alt="Matplotlib">
   <br><br>
+</div>
+
+<div align="center">
+  <img src="images/intricate.png" alt="Intricate Map Visualization" width="70%">
+  <br><br>
+</div>
+
+<div align="center">
+  <img src="images/CLI.png" alt="CLI Interface" width="45%" style="margin-right: 2%;">
+  <img src="images/visualizer.png" alt="Visualizer Interface" width="45%">
 </div>
 
 <details open>
@@ -28,7 +38,7 @@ The project includes a **Python visualizer** with **interactive graphs** that di
 <details>
 <summary><b>✨ Features</b></summary>
 
-- � **Multi-Path Algorithm**: Finds multiple optimal paths simultaneously
+- **Multi-Path Algorithm**: Finds multiple optimal paths simultaneously
 - 🧠 **Smart Ant Distribution**: Optimally distributes ants across paths to minimize total moves
 - 🎯 **Pathfinding Optimization**: Uses advanced graph algorithms for efficient path discovery
 - � **Movement Simulation**: Simulates ant movement with collision detection and flow control
