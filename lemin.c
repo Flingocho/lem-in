@@ -206,23 +206,8 @@ int getRoomInfo(t_lemin *vars)
 	
 	// Resetear el índice y procesar el input
 	vars->room_count = 0;
-	if(makeRoomsArray(input, vars) == -1) // <-----------ESTO NO FUNCIONA COMO DEBERIA
+	if(makeRoomsArray(input, vars) == -1)
 		exit(1);
-	// while (count < vars->room_count)
-	// {
-	// 	printf("name: %s number: %d   start: %d end: %d   connections:\n", vars->rooms[count]->room_name, vars->rooms[count]->room_id, vars->rooms[count]->is_start, vars->rooms[count]->is_end);
-	// 	if (*vars->rooms[count]->connections)
-	// 	{
-	// 		int j = 0;
-	// 		while (vars->rooms[count]->connections[j])
-	// 		{
-	// 			printf("	to: %s\n", vars->rooms[count]->connections[j]->room_name);
-	// 			j++;
-	// 		}
-	// 	}
-	// 	count++;
-	// }
-	// printf("\n");
 	t_path **res = findAllPaths(vars);
 	if (!res)
 		printf("Camino no encontrado\n");
