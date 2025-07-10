@@ -49,8 +49,16 @@ t_room	*findRoomName(t_lemin *vars, char *name)
 {
 	for (int i = 0; i < vars->room_count; i++)
     {
-        if (ft_strncmp(vars->rooms[i]->room_name, name, ft_strlen(name)) == 0)
-            return (vars->rooms[i]);
+		if (ft_strlen(vars->rooms[i]->room_name) > ft_strlen(name))
+		{
+			if (ft_strncmp(vars->rooms[i]->room_name, name, ft_strlen(vars->rooms[i]->room_name)) == 0)
+            	return (vars->rooms[i]);
+		}
+		else
+		{
+			if (ft_strncmp(vars->rooms[i]->room_name, name, ft_strlen(name)) == 0)
+            	return (vars->rooms[i]);
+		}
     }
     return (NULL);
 }
