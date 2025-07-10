@@ -6,7 +6,7 @@
 /*   By: jainavas <jainavas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 22:09:06 by jainavas          #+#    #+#             */
-/*   Updated: 2025/07/07 15:35:28 by jainavas         ###   ########.fr       */
+/*   Updated: 2025/07/10 14:24:46 by jainavas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,9 +202,9 @@ void	simulateAntMovement(t_path **paths, t_lemin *vars)
 				
 				// Imprimir el movimiento
 				if (moves_in_step > 0)
-					printf(" ");
+					ft_printf(" ");
 				
-				printf("L%d->%s", ant + 1, vars->rooms[next_room_id]->room_name);
+				ft_printf("L%d->%s", ant + 1, vars->rooms[next_room_id]->room_name);
 				moves_in_step++;
 				
 				// Si llegó al final, marcarla como terminada
@@ -220,14 +220,14 @@ void	simulateAntMovement(t_path **paths, t_lemin *vars)
 		}
 		
 		if (moves_in_step > 0)
-			printf("\n");
+			ft_printf("\n");
 			
 		free(room_will_be_occupied);
 		
 		// Prevenir bucles infinitos
 		if (step > 1000)
 		{
-			printf("Error: Too many steps, breaking simulation\n");
+			ft_printf("Error: Too many steps, breaking simulation\n");
 			break;
 		}
 	}

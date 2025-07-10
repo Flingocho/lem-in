@@ -160,7 +160,9 @@ int makeRoomsArray(char **input, t_lemin *vars)
 
 int makeRoomsConns(char **input, int i, t_lemin *vars)
 {
-	char **line;
+	char	**line;
+	t_room	*a;
+	t_room	*b;
 
 	while (input[i])
 	{
@@ -175,18 +177,18 @@ int makeRoomsConns(char **input, int i, t_lemin *vars)
 		{
 			return (freedoublepointer(line), ft_printf("Error: Connection structure 1: line:%d\n", i), -1);
 		}
-		
-		if (!findRoomName(vars, line[0]))
-		{
+		a = findRoomName(vars, line[0]);
+		b = findRoomName(vars, line[1]);
+		if (!a)
 			return (freedoublepointer(line), ft_printf("Error: Connection structure 2: line:%d\n", i), -1);
-		}
 		
-		if (!findRoomName(vars, line[1]))
-		{
+		if (!b)
 			return (freedoublepointer(line), ft_printf("Error: Connection structure 3: line:%d\n", i), -1);
-		}
 		
-		roomAddConn(findRoomName(vars, line[0]), findRoomName(vars, line[1]));
+		if (a == b)
+			return (freedoublepointer(line), ft_printf("Error: Connection structure 4: line:%d\n", i), -1);
+		
+		roomAddConn(a, b);
 		freedoublepointer(line);
 		i++;
 	}
@@ -202,7 +204,7 @@ int getRoomInfo(t_lemin *vars)
 		exit(1);
 	// Imprimir el input original primero
 	while (input[++i])
-		printf("%s\n", input[i]);
+		ft_printf("%s\n", input[i]);
 	
 	// Resetear el índice y procesar el input
 	vars->room_count = 0;
@@ -210,7 +212,7 @@ int getRoomInfo(t_lemin *vars)
 		exit(1);
 	t_path **res = findAllPaths(vars);
 	if (!res)
-		printf("Camino no encontrado\n");
+		ft_printf("Camino no encontrado\n");
 	else
 	{
 		distributeAnts(res, vars);
@@ -218,15 +220,15 @@ int getRoomInfo(t_lemin *vars)
 		{
 			if (!res[j])
 				break;
-			printf("path num: %d	ants assigned: %d	start: %s ", j, res[j]->ants_assigned, findRoomById(vars, res[j]->room_ids[0])->room_name);
+			ft_printf("path num: %d	ants assigned: %d	start: %s ", j, res[j]->ants_assigned, findRoomById(vars, res[j]->room_ids[0])->room_name);
 			for (int i = 1; i < res[j]->length; i++)
 			{
-				printf("->");
-				printf(" %s ", findRoomById(vars, res[j]->room_ids[i])->room_name);
+				ft_printf("->");
+				ft_printf(" %s ", findRoomById(vars, res[j]->room_ids[i])->room_name);
 			}
-			printf("\n");
+			ft_printf("\n");
 		}
-		printf("\n=== SIMULATION ===\n");
+		ft_printf("\n=== SIMULATION ===\n");
 		simulateAntMovement(res, vars);
 		
 		for (int i = 0; i < vars->path_count; i++)
