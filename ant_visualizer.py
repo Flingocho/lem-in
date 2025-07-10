@@ -72,6 +72,14 @@ def parse_path_line(line: str) -> Optional[Path]:
     
     return Path(path_num, ant_count, nodes)
 
+
+def check_last_line_for_error():
+    lines = sys.stdin.read().splitlines()
+    if lines:
+        last_line = lines[-1]
+        if "Error" in last_line:
+            sys.exit("Error found in last line, exiting.")
+
 def parse_lem_in_with_simulation() -> Tuple[int, List[Node], List[Connection], List[Path], List[str]]:
     """Parsea el formato completo de lem-in con datos de simulación desde stdin"""
     lines = []
@@ -101,7 +109,6 @@ def parse_lem_in_with_simulation() -> Tuple[int, List[Node], List[Connection], L
     next_is_start = False
     next_is_end = False
     parsing_simulation = False
-    
     # Parsear nodos
     while current_line < len(lines):
         line = lines[current_line]
@@ -482,6 +489,8 @@ def main():
     """Función principal con mensajes mejorados"""
     print(">> Iniciando Lem-in Graph Visualizer...")
     print(">> Procesando datos de entrada...")
+
+    check_last_line_for_error()
     
     num_ants, nodes, connections, paths, simulation_lines = parse_lem_in_with_simulation()
     

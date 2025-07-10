@@ -119,12 +119,16 @@ int makeRoomsArray(char **input, t_lemin *vars)
 		{
 			if (vars->start_room)
 				return (ft_printf("Error: Too many ##start\n"), -1);
+			if (next_is_end || next_is_start)
+				return (ft_printf("Error: ##start after another\n"), -1);
 			next_is_start = 1;
 		}
 		else if (ft_strncmp("##end", input[i], 6) == 0)
 		{
 			if (vars->end_room)
 				return (ft_printf("Error: Too many ##end\n"), -1);
+			if (next_is_end || next_is_start)
+				return (ft_printf("Error: ##end after another\n"), -1);
 			next_is_end = 1;
 		}
 		else if (input[i][0] == '#')
